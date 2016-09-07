@@ -2,6 +2,8 @@ package com.poc.parentalcontrol.parentalcontrolpoc;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,7 @@ import java.util.List;
  * item details side-by-side using two vertical panes.
  */
 public class AppListActivity extends AppCompatActivity {
+    private String TAG = this.getClass().getSimpleName();
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -68,15 +72,27 @@ public class AppListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+
+        final PackageManager pm = getPackageManager();
+//get a list of installed apps.
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+
+        for (ApplicationInfo packageInfo : packages) {
+            Log.d(TAG, "Installed package :" + packageInfo.packageName);
+            Log.d(TAG, "Source dir : " + packageInfo.sourceDir);
+            Log.d(TAG, "Launch Activity :" + pm.getLaunchIntentForPackage(packageInfo.packageName));
+        }
+
+
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(packages));
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<ApplicationInfo> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public SimpleItemRecyclerViewAdapter(List<ApplicationInfo> items) {
             mValues = items;
         }
 
@@ -90,15 +106,15 @@ public class AppListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mIdView.setText(mValues.get(position).uid);
+            holder.mContentView.setText(mValues.get(position).publicSourceDir);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(AppDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(AppDetailFragment.ARG_ITEM_ID, String.valueOf(holder.mItem.uid));
                         AppDetailFragment fragment = new AppDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -107,7 +123,7 @@ public class AppListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, AppDetailActivity.class);
-                        intent.putExtra(AppDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(AppDetailFragment.ARG_ITEM_ID, holder.mItem.uid);
 
                         context.startActivity(intent);
                     }
@@ -124,7 +140,7 @@ public class AppListActivity extends AppCompatActivity {
             public final View mView;
             public final TextView mIdView;
             public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public ApplicationInfo mItem;
 
             public ViewHolder(View view) {
                 super(view);
