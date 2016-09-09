@@ -106,7 +106,7 @@ public class AppListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).uid);
+            holder.mIdView.setText(String.valueOf(position));
             holder.mContentView.setText(mValues.get(position).publicSourceDir);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +124,7 @@ public class AppListActivity extends AppCompatActivity {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, AppDetailActivity.class);
                         intent.putExtra(AppDetailFragment.ARG_ITEM_ID, holder.mItem.uid);
-
+                        intent.putExtra(AppDetailFragment.ARG_ITEM_PACKAGE, holder.mItem.publicSourceDir);
                         context.startActivity(intent);
                     }
                 }
