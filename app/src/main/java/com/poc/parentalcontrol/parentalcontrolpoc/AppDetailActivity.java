@@ -9,6 +9,18 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+
+import java.util.Calendar;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.widget.TimePicker;
+import android.widget.Button;
+import android.view.View.OnClickListener;
+
+
+
 
 /**
  * An activity representing a single App detail screen. This
@@ -17,6 +29,9 @@ import android.view.MenuItem;
  * in a {@link AppListActivity}.
  */
 public class AppDetailActivity extends AppCompatActivity {
+    private static TextView set_time;
+    private static Button time;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +39,19 @@ public class AppDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_app_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
+
+        time = (Button) findViewById(R.id.selecttime);
+
+        time.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                // Show time dialog
+                showDialog(1);
+            }
+        });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +90,37 @@ public class AppDetailActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+    protected Dialog onCreateDialog(int id) {
+
+        // Get the calander
+        Calendar c = Calendar.getInstance();
+
+        // From calander get the year, month, day, hour, minute
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minute = c.get(Calendar.MINUTE);
+
+
+         // Open the timepicker dialog
+         return new TimePickerDialog(AppDetailActivity.this, time_listener, hour,
+                        minute, true);
+
+
+    }
+
+    TimePickerDialog.OnTimeSetListener time_listener = new TimePickerDialog.OnTimeSetListener() {
+
+        @Override
+        public void onTimeSet(TimePicker view, int hour, int minute) {
+            // store the data in one string and set it to text
+            String time1 = String.valueOf(hour) + ":" + String.valueOf(minute);
+            set_time.setText(time1);
+        }
+    };
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

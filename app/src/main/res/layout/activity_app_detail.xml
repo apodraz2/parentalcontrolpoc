@@ -50,6 +50,15 @@
         app:layout_anchor="@+id/app_detail_container"
         app:layout_anchorGravity="top|end" />
 
+    <Button
+        android:id="@+id/selecttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_marginTop="@dimen/app_bar_height"
+        android:text="Set Time" />
+
 
 
 
