@@ -40,13 +40,13 @@ public class AppDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
+        set_time = (TextView) findViewById(R.id.set_time);
         time = (Button) findViewById(R.id.selecttime);
 
         time.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-
                 // Show time dialog
                 showDialog(1);
             }

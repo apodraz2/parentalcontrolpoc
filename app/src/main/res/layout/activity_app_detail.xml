@@ -58,6 +58,13 @@
         android:padding="10dp"
         android:layout_marginTop="@dimen/app_bar_height"
         android:text="Set Time" />
+    <TextView
+        android:id="@+id/set_time"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/app_bar_height"
+        android:gravity="center"
+        android:padding="10dp" />
 
 
 
